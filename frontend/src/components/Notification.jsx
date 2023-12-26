@@ -1,6 +1,7 @@
 const Notification = ({ messageObj }) => {
     const messageStyle = {
         background: 'lightgrey',
+        fontWeight: 'bold',
         fontsize: '5rem',
         borderStyle: 'solid',
         borderRadius: 5,

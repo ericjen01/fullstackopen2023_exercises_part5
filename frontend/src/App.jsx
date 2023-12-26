@@ -39,6 +39,7 @@ function App() {
       setUser(user)
       setUsername('')
       setPassword('')
+      handleMessage(`login successful.`, 'success');
     }
     catch (ex) {
       handleMessage('Wrong credentials', 'error')
@@ -48,7 +49,7 @@ function App() {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedinBlogUser')
     setUser(null)
-    handleMessage(`User logged out.`, 'success');
+    handleMessage('User logged out.', 'success');
   }
 
   const createBlog = async (blogObject) => {
