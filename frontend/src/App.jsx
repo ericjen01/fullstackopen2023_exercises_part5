@@ -76,12 +76,12 @@ function App() {
           {user.username} logged in
           <button onClick={handleLogout}>Logout</button>
         </h2>
+        <BlogForm createBlog={createBlog} />
 
         {blogs.map(b => <Blog key={b.id} blog={b} />)}
 
       </>}
 
-      <BlogForm createBlog={createBlog} />
     </>
   )
 }
