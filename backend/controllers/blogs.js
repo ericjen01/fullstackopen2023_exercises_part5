@@ -30,37 +30,41 @@ const getTokenFrom = req => {
 }
 
 blogsRouter.post('/', async (req, res, next) => {
+
+    let token
     const body = req.body
-    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    const { title, url, likes, author } = req.body;
+
+    (req.user)
+        ? (token = req.headers.authorization.split(' ')[1])
+        : res.status(401).json({ error: 'token missing or invalid' });
+
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
     if (!decodedToken.id) {
       return res.status(401).json({ error: 'token invalid' })
     }
-    //const user = await User.findById(decodedToken.id)    
-    const user = req.user
-        user
-            ? user
-            : res.status(401).json({ error: 'token missing' })
-        title: body.title
-            ? body.title 
-            : res.status(400).json({error: 'title missing'})
-        url: body.author
-            ? body.author
-            : res.status(400).json({error: 'url missing'})
-        likes: body.likes
-            ? body.likes 
-            : body.likes = 0
+    const decodedUser = await User.findById(decodedToken.id)    
 
-    const blog = new Blog({
+    if(!(decodedUser && title && url)){
+        return res.status(400).json({error: 'title, token and url required'})
+    }
+        
+    likes: body.likes
+        ? body.likes 
+        : body.likes = 0
+
+const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.author,
         likes: body.likes,
-        userId: user._id
+        userId: decodedUser._id
     })
     
     const savedBlog = await blog.save()
-    user.blogs = user.blogs.concat(savedBlog._id)
-    await user.save()
+    decodedUser.blogs = decodedUser.blogs.concat(savedBlog._id)
+    await decodedUser.save()
     res.status(201).json(savedBlog)
 })
 

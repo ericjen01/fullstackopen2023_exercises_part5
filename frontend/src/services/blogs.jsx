@@ -1,10 +1,16 @@
 import axios from 'axios'
 import baseUrl from '../components/constants'
 
-let token = null
+let token;
+const config = () => ({
+    headers: {
+        Authorization: token,
+    },
+});
 
 const setToken = (newToken) => {
     token = `Bearer ${newToken}`
+    console.log("*** f services token: ", token)
 }
 
 const getBlogs = () => {
@@ -13,10 +19,10 @@ const getBlogs = () => {
 }
 
 const createBlog = async (newObj) => {
-    const config = {
-        headers: { Authorization: token },
-    }
-    const res = await axios.post(baseUrl.blogs, newObj, config)
+    console.log("*** f services blogs newobj: ", newObj)
+    console.log("*** f services blogs config: ", config)
+    const res = await axios.post(baseUrl.blogs, newObj, config())
+    console.log("****** F services blogs res: ", res)
     return res.data
 }
 
