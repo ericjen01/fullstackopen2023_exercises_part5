@@ -19,11 +19,12 @@ const getBlogs = () => {
 }
 
 const createBlog = async (newObj) => {
-    console.log("*** f services blogs newobj: ", newObj)
-    console.log("*** f services blogs config: ", config)
     const res = await axios.post(baseUrl.blogs, newObj, config())
-    console.log("****** F services blogs res: ", res)
     return res.data
 }
 
-export default { setToken, getBlogs, createBlog }
+const deleteBlog = async (id) => {
+    await axios.delete(`${baseUrl.blogs}/${id}`, config());
+};
+
+export default { setToken, getBlogs, createBlog, deleteBlog }

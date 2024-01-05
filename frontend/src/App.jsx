@@ -13,7 +13,7 @@ import Notification from './components/Notification'
 function App() {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
+  const [username, setusername] = useState('')
   const [password, setPassword] = useState('')
   const [messageObj, setMessageObj] = useState(null)
 
@@ -44,7 +44,7 @@ function App() {
       window.localStorage.setItem('loggedinBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
+      setusername('')
       setPassword('')
       handleMessage(`login successful.`, 'success');
     }
@@ -60,7 +60,6 @@ function App() {
   }
 
   const createBlog = async (blogObject) => {
-    console.log("..... blogformref", blogFormRef)
     blogFormRef.current.toggleVisibility()
     try {
       const newBlog = await blogService.createBlog(blogObject);
@@ -70,27 +69,50 @@ function App() {
     }
   }
 
+  const deleteBlog = async (blog) => {
+    try {
+      if (window.confirm(`reomve ${blog.title} by ${blog.author}?`)) {
+        await blogService.deleteBlog(blog.id)
+        const result = await blogService.getBlogs();
+        setBlogs(result)
+        handleMessage(`removing '${blog.title}' by '${blog.author}' suceeded`, 'success')
+      }
+    } catch (err) {
+      handleMessage(`removing '${blog.title}' by '${blog.author}' failed`, 'error')
+    }
+  }
+
   return (
     <>
+
       <Notification messageObj={messageObj} />
+
       <h2>Blogs</h2>
+
       {!user && <LoginForm
         username={username}
         password={password}
         handleLogin={handleLogin}
-        updateUsername={({ target }) => setUsername(target.value)}
+        updateusername={({ target }) => setusername(target.value)}
         updatePassword={({ target }) => setPassword(target.value)} />}
 
       {user && <>
+
         <h2>
           {user.username} logged in
           <button onClick={handleLogout}>Logout</button>
         </h2>
+
         <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
           <BlogForm createBlog={createBlog} />
         </Togglable>
 
-        {blogs.map(b => <Blog key={b.id} blog={b} />)}
+        {blogs.map(blog =>
+          <Blog
+            key={blog.id}
+            {...{ blog, deleteBlog, user }}
+          />
+        )}
 
       </>}
     </>

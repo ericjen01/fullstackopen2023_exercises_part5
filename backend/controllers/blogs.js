@@ -3,14 +3,11 @@ const jwt = require('jsonwebtoken')
 const { restart } = require('nodemon')
 const User = require('../models/user')
 const Blog = require('../models/blog')
-
+ 
 
 blogsRouter.get('/', async (req, res) => {
-    const blogs = await Blog.find({}).populate('user', { 
-        username: 1, 
-        name: 1 
-    })
-    res.json(blogs)
+    const blogs = await Blog.find({})  
+       res.json(blogs)
 })
 
 blogsRouter.get('/:id', async (req, res, next) => {
@@ -45,11 +42,12 @@ blogsRouter.post('/', async (req, res, next) => {
       return res.status(401).json({ error: 'token invalid' })
     }
     const decodedUser = await User.findById(decodedToken.id)    
-
     if(!(decodedUser && title && url)){
         return res.status(400).json({error: 'title, token and url required'})
     }
-        
+    console.log("....blog: ", decodedUser.username)
+    console.log("....blog: ", decodedUser._id)
+
     likes: body.likes
         ? body.likes 
         : body.likes = 0
@@ -59,7 +57,11 @@ const blog = new Blog({
         author: body.author,
         url: body.author,
         likes: body.likes,
-        userId: decodedUser._id
+        date: new Date().toISOString().slice(0,10),
+        user:{
+            userId: decodedUser._id,
+            username: decodedUser.username
+        }
     })
     
     const savedBlog = await blog.save()
