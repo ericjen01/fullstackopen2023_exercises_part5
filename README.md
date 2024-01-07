@@ -220,3 +220,17 @@ React eslint error missing in props validation
   "rules": {
   "react/prop-types": "off"
   }
+
+--- 5-b
+prop-types package
+npm install prop-types
+
+--- 5-b
+ESlint for the frontend
+npm install --save-dev eslint-plugin-jest
+
+create .eslintrc.cjs 
+
+create .eslintignore with the following contents to the repository root
+
+npm run lint
