@@ -1,7 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, deleteBlog, user }) => {
-    console.log("printing: ")
+const Blog = ({ user, blog, updateBlog, deleteBlog }) => {
 
     const blogStyle = {
         margin: 5,
@@ -19,6 +18,8 @@ const Blog = ({ blog, deleteBlog, user }) => {
 
     const addLike = () => {
         setUserLikes(userLikes + 1);
+        const blogToUpdate = { ...blog, likes: userLikes + 1 }
+        updateBlog(blogToUpdate)
     };
 
     return (

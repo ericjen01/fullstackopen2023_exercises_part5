@@ -22,11 +22,16 @@ function App() {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedinBlogUser')
+
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+
       setUser(user)
+
       blogService.setToken(user.token)
-      blogService.getBlogs().then(blogs => setBlogs(blogs))
+      blogService
+        .get()
+        .then(blogs => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
     }
 
   }, [])
@@ -43,6 +48,10 @@ function App() {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedinBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
+
+      const blogList = blogs.sort((a, b) => b.likes - a.likes);
+
+      setBlogs(blogList)
       setUser(user)
       setusername('')
       setPassword('')
@@ -62,17 +71,30 @@ function App() {
   const createBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const newBlog = await blogService.createBlog(blogObject);
+      const newBlog = await blogService.create(blogObject);
       setBlogs(blogs.concat(newBlog))
     } catch (ex) {
       handleMessage('New blog creation failed', 'error')
     }
   }
 
+  const updateBlog = async (blog) => {
+    console.log("blog: ", blog)
+    try {
+      await blogService.update(blog.id, blog);
+      const blogs = await blogService.get();
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
+      handleMessage(`blog '${blog.title}' by '${blog.author}' liked`, 'success')
+    } catch (err) {
+      handleMessage(`liking failed: ${err}`, 'error')
+    }
+
+  }
+
   const deleteBlog = async (blog) => {
     try {
       if (window.confirm(`reomve ${blog.title} by ${blog.author}?`)) {
-        await blogService.deleteBlog(blog.id)
+        await blogService.remove(blog.id)
         const result = await blogService.getBlogs();
         setBlogs(result)
         handleMessage(`removing '${blog.title}' by '${blog.author}' suceeded`, 'success')
@@ -93,7 +115,7 @@ function App() {
         username={username}
         password={password}
         handleLogin={handleLogin}
-        updateusername={({ target }) => setusername(target.value)}
+        updateUsername={({ target }) => setusername(target.value)}
         updatePassword={({ target }) => setPassword(target.value)} />}
 
       {user && <>
@@ -110,7 +132,7 @@ function App() {
         {blogs.map(blog =>
           <Blog
             key={blog.id}
-            {...{ blog, deleteBlog, user }}
+            {...{ user, blog, updateBlog, deleteBlog, }}
           />
         )}
 

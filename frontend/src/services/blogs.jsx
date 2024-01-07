@@ -13,18 +13,23 @@ const setToken = (newToken) => {
     console.log("*** f services token: ", token)
 }
 
-const getBlogs = () => {
+const get = () => {
     const res = axios.get(baseUrl.blogs)
     return res.then(response => response.data)
 }
 
-const createBlog = async (newObj) => {
+const create = async (newObj) => {
     const res = await axios.post(baseUrl.blogs, newObj, config())
     return res.data
 }
 
-const deleteBlog = async (id) => {
+const update = async (id, newObj) => {
+    const res = await axios.put(`${baseUrl.blogs}/${id}`, newObj, config())
+    return res.data
+}
+
+const remove = async (id) => {
     await axios.delete(`${baseUrl.blogs}/${id}`, config());
 };
 
-export default { setToken, getBlogs, createBlog, deleteBlog }
+export default { setToken, get, create, update, remove }

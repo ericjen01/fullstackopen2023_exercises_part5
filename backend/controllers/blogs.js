@@ -55,7 +55,7 @@ blogsRouter.post('/', async (req, res, next) => {
 const blog = new Blog({
         title: body.title,
         author: body.author,
-        url: body.author,
+        url: body.url,
         likes: body.likes,
         date: new Date().toISOString().slice(0,10),
         user:{
@@ -71,6 +71,7 @@ const blog = new Blog({
 })
 
 blogsRouter.put("/:id", async (req, res, next) => {
+    console.log("backend updating")
     const { author, title, url, likes } = req.body;
     const id = req.params.id;
     const blog = new Blog({id, author, title, url, likes})
