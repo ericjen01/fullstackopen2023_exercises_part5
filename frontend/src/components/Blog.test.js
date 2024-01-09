@@ -3,8 +3,7 @@ import Blog from './Blog'
 import React from 'react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-//import '@testing-library/jest-dom/extend-expect'
-import { computeHeadingLevel, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 const blog = {
   title: 'Title of test blog',
@@ -42,10 +41,8 @@ test('test blog gets rendered v2, details button unclicked', async () => {
 
 test('event handler responds eeach button click', async () => {
 
-  // const mockHandler = jest.fn()
   const { container } = render(<Blog blog={blog}/>)
   const button = container.querySelector('.viewBtn')
-  //screen.debug(button)
 
   const user = userEvent.setup()
   await user.click(button)
