@@ -234,3 +234,31 @@ create .eslintrc.cjs
 create .eslintignore with the following contents to the repository root
 
 npm run lint
+
+--- 5-c 
+Testing react app frontend
+
+npm install --save-dev @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom @babel/preset-env @babel/preset-react
+
+in package.json:
+{
+  "scripts": {
+    // ...
+    "test": "jest"
+  }
+  // ...
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
+
+for .babelrc:
+{
+  "presets": [
+    "@babel/preset-env",
+    ["@babel/preset-react", { "runtime": "automatic" }]
+  ]
+}
+
+Clicking buttons in tests
+npm install --save-dev @testing-library/user-event

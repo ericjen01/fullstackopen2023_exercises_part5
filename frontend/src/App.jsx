@@ -43,19 +43,19 @@ function App() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    console.log("loggin in with ", username, "*password*")
+    console.log('loggin in with ', username, '*password*')
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedinBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
 
-      const blogList = blogs.sort((a, b) => b.likes - a.likes);
+      const blogList = blogs.sort((a, b) => b.likes - a.likes)
 
       setBlogs(blogList)
       setUser(user)
       setusername('')
       setPassword('')
-      handleMessage(`login successful.`, 'success');
+      handleMessage('login successful.', 'success')
     }
     catch (ex) {
       handleMessage('Wrong credentials', 'error')
@@ -65,13 +65,13 @@ function App() {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedinBlogUser')
     setUser(null)
-    handleMessage('User logged out.', 'success');
+    handleMessage('User logged out.', 'success')
   }
 
   const createBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const newBlog = await blogService.create(blogObject);
+      const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
     } catch (ex) {
       handleMessage('New blog creation failed', 'error')
@@ -79,10 +79,10 @@ function App() {
   }
 
   const updateBlog = async (blog) => {
-    console.log("blog: ", blog)
+    console.log('blog: ', blog)
     try {
-      await blogService.update(blog.id, blog);
-      const blogs = await blogService.get();
+      await blogService.update(blog.id, blog)
+      const blogs = await blogService.get()
       setBlogs(blogs.sort((a, b) => b.likes - a.likes))
       handleMessage(`blog '${blog.title}' by '${blog.author}' liked`, 'success')
     } catch (err) {
@@ -95,7 +95,7 @@ function App() {
     try {
       if (window.confirm(`reomve ${blog.title} by ${blog.author}?`)) {
         await blogService.remove(blog.id)
-        const result = await blogService.getBlogs();
+        const result = await blogService.getBlogs()
         setBlogs(result)
         handleMessage(`removing '${blog.title}' by '${blog.author}' suceeded`, 'success')
       }
@@ -132,7 +132,7 @@ function App() {
         {blogs.map(blog =>
           <Blog
             key={blog.id}
-            {...{ user, blog, updateBlog, deleteBlog, }}
+            {...{ username: user.username, blog, updateBlog, deleteBlog, }}
           />
         )}
 
