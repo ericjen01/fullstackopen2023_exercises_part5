@@ -5,16 +5,18 @@ const LoginForm = ({ username, password, handleLogin, updateUsername, updatePass
     <>
       <form onSubmit={handleLogin}>
         Username <input
+          id='username'
           type="text"
           value={username}
           onChange={updateUsername}
         />
         Password <input
+          id='password'
           type="text"
           value={password}
           onChange={updatePassword}
         />
-        <button>Login</button>
+        <button id='login'>Login</button>
       </form>
     </>
   )

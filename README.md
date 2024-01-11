@@ -191,74 +191,133 @@ npm script test
 npm test
 
 ---4-b
-npm install --save-dev cross-env
-npm install cross-env
+  npm install --save-dev cross-env
+  npm install cross-env
 
-npm install --save-dev supertest
+  npm install --save-dev supertest
 
-npm test -- tests/note_api.test.js
-npm test -- -t "a specific note is within the returned notes"
-npm test -- -t 'notes'
+  npm test -- tests/note_api.test.js
+  npm test -- -t "a specific note is within the returned notes"
+  npm test -- -t 'notes'
 
-npm install express-async-errors
-npm test -- tests/note_api.test.js
+  npm install express-async-errors
+  npm test -- tests/note_api.test.js
 
 --- 4-b
-npm install express-async-errors *introduce the library in app.js, before importing the routes:
+  npm install express-async-errors *introduce the library in app.js, before importing the routes:
 
 --- 4-c
-npm install mongoose-unique-validator
-npm install mongoose@7.6.5
+  npm install mongoose-unique-validator
+  npm install mongoose@7.6.5
 
 --- 4-d
-npm install jsonwebtoken
+  npm install jsonwebtoken
 
----------------------------------------
-React eslint error missing in props validation
-  /* eslint-disable react/prop-types */ // TODO: upgrade to latest eslint tooling
- OR
-  "rules": {
-  "react/prop-types": "off"
-  }
-
---- 5-b
-prop-types package
-npm install prop-types
+  ---------------------------------------
+  React eslint error missing in props validation
+    /* eslint-disable react/prop-types */ // TODO: upgrade to latest eslint tooling
+  OR
+    "rules": {
+    "react/prop-types": "off"
+    }
 
 --- 5-b
-ESlint for the frontend
-npm install --save-dev eslint-plugin-jest
+  prop-types package
+    npm install prop-types
 
-create .eslintrc.cjs 
+--- 5-b
+  ESlint for the frontend
+    npm install --save-dev eslint-plugin-jest
 
-create .eslintignore with the following contents to the repository root
+    create .eslintrc.cjs 
 
-npm run lint
+    create .eslintignore with the following contents to the repository root
+
+    npm run lint
 
 --- 5-c 
-Testing react app frontend
+  Testing react app frontend
 
-npm install --save-dev @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom @babel/preset-env @babel/preset-react
+  npm install --save-dev @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom @babel/preset-env @babel/preset-react
 
-in package.json:
-{
-  "scripts": {
-    // ...
-    "test": "jest"
+  in package.json:
+    {
+      "scripts": {
+        // ...
+        "test": "jest"
+      }
+      // ...
+      "jest": {
+        "testEnvironment": "jsdom"
+      }
+    }
+
+  for .babelrc:
+    {
+      "presets": [
+        "@babel/preset-env",
+        ["@babel/preset-react", { "runtime": "automatic" }]
+      ]
+    }
+
+  Clicking buttons in tests
+    npm install --save-dev @testing-library/user-event
+
+--- 5-d
+  Cypress
+
+  npm install --save-dev cypress
+    "scripts": {
+      "dev": "vite --host",
+      "cypress:open": "cypress open"
+
+  npm run cypress:open
+
+  add an npm script to the backend
+    "scripts": {
+        "start:test": "NODE_ENV=test node index.js",
+
+  Cy error fix:
+    npm install eslint-plugin-cypress --save-dev
+
+    change configuration in .eslintrc.cjs:
+
+    module.exports = {
+    "env": {
+      "cypress/globals": true
+    "plugins": [
+        "react", "jest", "cypress"
+    ],
+    }
   }
-  // ...
-  "jest": {
-    "testEnvironment": "jsdom"
-  }
-}
 
-for .babelrc:
-{
-  "presets": [
-    "@babel/preset-env",
-    ["@babel/preset-react", { "runtime": "automatic" }]
-  ]
-}
+  Controlling the state of the database
 
-Clicking buttons in tests
-npm install --save-dev @testing-library/user-event
+    if (process.env.NODE_ENV === 'test'){...}
+
+    npm run start:test
+
+    backend:
+
+      npm install --save-dev cross-env
+
+      "scripts": {
+        "start": "cross-env  NODE_ENV=production node index.js",
+        "dev": "cross-env  NODE_ENV=development nodemon index.js",
+        "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+        "lint": "eslint .",
+        "start:test": "cross-env NODE_ENV=test node index.js"
+      },
+
+      .env
+        TEST_MONGODB_URI=mongodb+srv://fullstack:<password>@cluster0.o1opl.mongodb.net/TestBlogApp
+        ?retryWrites=true&w=majority
+
+      config.js
+        require('dotenv').config()
+        const PORT = process.env.PORT
+        const MONGODB_URI = process.env.NODE_ENV === 'test'
+          ? process.env.TEST_MONGODB_URI
+          : process.env.MONGODB_URI
+
+    

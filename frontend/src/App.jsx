@@ -7,6 +7,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 
 import Blog from './components/Blog'
+import Footer from './components/Footer'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 
@@ -58,7 +59,7 @@ function App() {
       handleMessage('login successful.', 'success')
     }
     catch (ex) {
-      handleMessage('Wrong credentials', 'error')
+      handleMessage('wrong credentials', 'error')
     }
   }
 
@@ -137,6 +138,7 @@ function App() {
         )}
 
       </>}
+      <Footer/>
     </>
   )
 }
