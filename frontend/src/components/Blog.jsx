@@ -27,7 +27,7 @@ const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
 
       Title: {blog.title} / By: {blog.author}
 
-      <button className="viewBtn" style={btnStyle} onClick={() => setShowDetail(!showDetail)}>
+      <button id="viewBtn" style={btnStyle} onClick={() => setShowDetail(!showDetail)}>
         {showDetail ? 'Hide Details' : 'View Details'}
       </button>
 
@@ -42,9 +42,9 @@ const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
             {blog.url}
           </a>
 
-          <div className='likes'>
+          <div id='likes'>
             likes {blog.likes}{' '}
-            <button style={btnStyle} onClick={addLike}>
+            <button id='likesBtn' style={btnStyle} onClick={addLike}>
               Like
             </button>
           </div>

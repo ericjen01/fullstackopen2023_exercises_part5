@@ -1,3 +1,25 @@
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', 'http://localhost:3001/api/login', {
+    username, password
+  }).then(({ body }) => {
+    localStorage.setItem('loggedinBlogUser', JSON.stringify(body))
+    cy.visit('http://localhost:5173')
+  })
+})
+
+Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+  cy.request({
+    url: 'http://localhost:3001/api/blogs',
+    method: 'POST',
+    body: { title, author, url },
+    headers: {
+      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedinBlogUser')).token}`
+    }
+  })
+
+  cy.visit('http://localhost:5173')
+})
+
 describe('Blog app', function() {
 
   beforeEach(function() {
@@ -23,7 +45,8 @@ describe('Blog app', function() {
     cy.contains('friday logged in')
   })
 
-  it.only('login expected to fail with wrong pw', function(){
+  //it.only('login expected to fail with wrong pw', function(){
+  it('login expected to fail with wrong pw', function(){
     cy.get('#username').type('friday')
     cy.get('#password').type('monday')
     cy.get('#login').click()
@@ -35,12 +58,10 @@ describe('Blog app', function() {
 
     //cy.get('html').should('not.contain', 'friday logged in')
     cy.contains('friday').should('not.exist')
-
   })
-
 })
 
-describe('after logged in', function() {
+describe('testing after-login, WITHOUT UI bypass ', function() {
 
   beforeEach(function() {
     cy.visit('http://localhost:5173')
@@ -50,13 +71,58 @@ describe('after logged in', function() {
     cy.contains('friday logged in')
   })
 
-  it('a new blog can be created', function() {
+  it('new blog can be created, method 1', function() {
     cy.contains('Create New Blog').click()
     cy.get('#title').type('a blog created by cypress')
     cy.get('#author').type('Cypress')
     cy.get('#url').type('cypress.com')
     cy.get('#createBtn').click()
     cy.contains('Title: a blog created by cypress / By: Cypress')
+  })
+
+  it('new blog can be created, method 2', function () {
+      cy.createBlog({
+        title: 'testing is fun', 
+        author: 'tester', 
+        url: 'testingisfun.com'  
+      })
+  })
+
+   it('blog can be liked', function () {
+    cy.contains('Create New Blog').click()
+    cy.get('#title').type('a blog created by cypress')
+    cy.get('#author').type('Cypress')
+    cy.get('#url').type('cypress.com')
+    cy.get('#createBtn').click()
+    cy.contains('Title: a blog created by cypress / By: Cypress')
+    cy.get('#viewBtn').click();
+    cy.contains('likes 0');
+    cy.get('#likesBtn').click();
+    cy.contains('likes 1');
+  });
+})
+
+describe('testing after-login, WITH UI bypass ', function() {
+
+  beforeEach(function() {
+    cy.login({username: 'friday', password: 'friday'})
+  })
+
+  it('a new blog can be created, method 1', function() {
+    cy.contains('Create New Blog').click()
+    cy.get('#title').type('a blog created by cypress')
+    cy.get('#author').type('Cypress')
+    cy.get('#url').type('cypress.com')
+    cy.get('#createBtn').click()
+    cy.contains('Title: a blog created by cypress / By: Cypress')
+  })
+  
+  it('new blog can be created, method 2', function () {
+    cy.createBlog({
+      title: 'testing is fun', 
+      author: 'tester', 
+      url: 'testingisfun.com'  
+    })
   })
 
   it('blog can be liked', function () {
@@ -67,11 +133,8 @@ describe('after logged in', function() {
     cy.get('#createBtn').click()
     cy.contains('Title: a blog created by cypress / By: Cypress')
     cy.get('#viewBtn').click();
-    cy.contains('likes 0');
-    cy.get('#likes').click();
     cy.contains('likes 1');
+    cy.get('#likesBtn').click();
+    cy.contains('likes 2');
   });
-
-
 })
-
