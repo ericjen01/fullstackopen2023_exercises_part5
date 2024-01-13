@@ -54,7 +54,7 @@ const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
           </div>
 
           {blog.user.username === username &&
-            <button style={btnStyle} onClick={() => deleteBlog(blog)}>
+            <button id='remove' style={btnStyle} onClick={() => deleteBlog(blog)}>
               Remove Blog
             </button>
           }

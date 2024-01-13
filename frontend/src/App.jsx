@@ -123,7 +123,7 @@ function App() {
 
         <h2>
           {user.username} logged in
-          <button onClick={handleLogout}>Logout</button>
+          <button id='logout' onClick={handleLogout}>Logout</button>
         </h2>
 
         <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
